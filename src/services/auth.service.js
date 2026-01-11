@@ -1,0 +1,63 @@
+import User from "../models/user.model.js";
+import { MSG } from "../constants/messages.js";
+import { hashPassword, comparePassword } from "../utils/hash.js";
+import { generateToken } from "../utils/jwt.js";
+
+export const registerService = async (data) => {
+  const { email, userName, password } = data;
+
+  const existing = await User.findOne({ 
+    $or: [{ email }, { userName }] 
+  });
+
+  if (existing) {
+    return { success: false, message: MSG.AUTH.USER_EXISTS };
+  }
+
+  const hashed = await hashPassword(password);
+
+  const user = await User.create({ 
+    ...data, 
+    password: hashed,
+    emailVerified: true 
+  });
+
+  return {
+    success: true,
+    message: MSG.AUTH.REGISTER_SUCCESS,
+    data: user
+  };
+};
+
+export const loginService = async (email, password) => {
+  const user = await User.findOne({
+    $or: [{ email }, { email: email }],
+  });
+
+  if (!user) {
+    return { success: false, message: MSG.AUTH.INVALID_CREDENTIALS };
+  }
+
+  const isMatch = await comparePassword(password, user.password);
+
+  if (!isMatch) {
+    return { success: false, message: MSG.AUTH.INVALID_CREDENTIALS };
+  }
+
+  const token = generateToken(user._id);
+
+  return {
+    success: true,
+    message: MSG.AUTH.LOGIN_SUCCESS,
+    token,
+    user: {
+      _id: user._id,
+      userName: user.userName,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      emailVerified: user.emailVerified,
+    },
+    data: user, 
+  };
+};
