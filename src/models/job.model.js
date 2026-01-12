@@ -78,7 +78,6 @@ const jobSchema = new mongoose.Schema(
     },
     industry: {
       type: String,
-      // enum: ["Technology", "Finance", "Healthcare", "E-commerce", "Other"],
       default: "Technology",
     },
     isFeatured: {

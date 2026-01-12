@@ -90,17 +90,18 @@ const learningJourneySchema = Joi.object({
   educationLevel: Joi.string().allow(""),
   fieldOfStudy: Joi.string().allow(""),
   specialization: Joi.string().allow(""),
+  customEducationLevel: Joi.string().allow(""),
   degree: Joi.string().allow(""),
   learningMode: Joi.string().valid("Online", "Regular", "Hybrid", "").allow(""),
   lookingForJobOpportunities: Joi.boolean().default(false),
 });
 
 const careerExpectationsSchema = Joi.object({
-  careerLevel: Joi.string().allow(""),
+  LookingPosition: Joi.string().allow(""),
   industry: Joi.string().allow(""),
   preferredJobRoles: Joi.array().items(Joi.string()).default([]),
   availability: Joi.string().valid("Remote", "Onsite", "Hybrid", "").allow(""),
-  recruiterVisibility: Joi.boolean().default(false),
+  lookingForJobOpportunities: Joi.boolean().default(true),
 });
 
 const jobAlertPreferencesSchema = Joi.object({
@@ -113,14 +114,22 @@ const jobAlertPreferencesSchema = Joi.object({
     max: Joi.number().allow(null),
     currency: Joi.string().default("USD"),
   }).optional(),
+   recruitvisibility: Joi.boolean().default(false),
 });
 
 const recentExperienceSchema = Joi.object({
   jobTitle: Joi.string().allow(""),
   currentRole: Joi.string().allow(""),
   experienceYears: Joi.string().allow(""),
-  skills: Joi.string().allow(""),
-  portfolio: Joi.string().allow(""),
+  skills: Joi.array().items(Joi.string().trim()),
+
+  portfolio: Joi.string()
+    .uri()
+    .allow("")
+    .messages({
+      "string.uri": "Portfolio must be a valid URL",
+    }),
+
 });
 
 const interestsAndPreferencesSchema = Joi.object({

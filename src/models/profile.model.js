@@ -121,17 +121,18 @@ const profileSchema = new mongoose.Schema(
       educationLevel: { type: String, default: "" }, 
       fieldOfStudy: { type: String, default: "" }, 
       specialization: { type: String, default: "" },
+      customEducationLevel: { type: String, default: "" },
       degree: { type: String, default: "" },
       learningMode: { type: String, enum: ["Online", "Regular", "Hybrid", ""], default: "" },
       lookingForJobOpportunities: { type: Boolean, default: false },
     },
 
     careerExpectations: {
-      careerLevel: { type: String, default: "" },
+      LookingPosition: { type: String, default: "" },
       industry: { type: String, default: "" },
       preferredJobRoles: [{ type: String }], 
       availability: { type: String, enum: ["Remote", "Onsite", "Hybrid", ""], default: "" },
-      recruiterVisibility: { type: Boolean, default: false },
+      lookingForJobOpportunities: { type: Boolean, default: false },
     },
 
     jobAlertPreferences: {
@@ -144,14 +145,22 @@ const profileSchema = new mongoose.Schema(
         max: { type: Number, default: null },
         currency: { type: String, default: "USD" },
       },
+      recruitvisibility: { type: Boolean, default: false },
     },
 
     recentExperience: {
       jobTitle: { type: String, default: "" },
       currentRole: { type: String, default: "" },
       experienceYears: { type: String, default: "" }, 
-      skills: { type: String, default: "" }, 
-      portfolio: { type: String, default: "" }, 
+      skills: {
+    type: [String],
+    default: [], 
+  },
+
+  portfolio: {
+    type: String,
+    default: "",
+  },
     },
 
     interestsAndPreferences: {

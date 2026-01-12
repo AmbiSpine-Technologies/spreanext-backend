@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import { MSG } from "../constants/messages.js";
 import { hashPassword, comparePassword } from "../utils/hash.js";
 import { generateToken } from "../utils/jwt.js";
+import Profile from "../models/profile.model.js";
 
 export const registerService = async (data) => {
   const { email, userName, password } = data;
@@ -22,9 +23,19 @@ export const registerService = async (data) => {
     emailVerified: true 
   });
 
+await Profile.create({
+    userId: user._id,
+    personalInfo: {
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      email: user.email,
+    },
+  });
+  const token = generateToken(user._id);
   return {
     success: true,
     message: MSG.AUTH.REGISTER_SUCCESS,
+    token,
     data: user
   };
 };

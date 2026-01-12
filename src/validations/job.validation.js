@@ -23,7 +23,11 @@ export const createJobValidation = Joi.object({
   companySize: Joi.string()
     .valid("Startup", "Mid-size", "Large", "Enterprise")
     .optional(),
-  industry: Joi.string().optional(),
+  industry: Joi.string()
+  .required()
+  .messages({
+    "any.required": "Please select an industry to post this job",
+  }),
   isFeatured: Joi.boolean().optional(),
   expiresAt: Joi.date().optional(),
 });

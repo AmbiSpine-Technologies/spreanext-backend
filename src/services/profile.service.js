@@ -220,9 +220,50 @@ export const getProfileByUsername = async (username) => {
   }
 };
 
+// export const updateProfileSection = async (userId, section, data) => {
+//   try {
+//     const profile = await Profile.findOne({ userId });
+
+//     if (!profile) {
+//       return {
+//         success: false,
+//         message: "Profile not found. Please create profile first.",
+//       };
+//     }
+
+//     profile[section] = data;
+//     profile.lastUpdated = new Date();
+//     await profile.save();
+
+//     return {
+//       success: true,
+//       message: `${section} updated successfully`,
+//       data: profile,
+//     };
+//   } catch (error) {
+//     console.error("Update profile section error:", error);
+//     return {
+//       success: false,
+//       message: error.message || "Failed to update profile section",
+//     };
+//   }
+// };
+
+
 export const updateProfileSection = async (userId, section, data) => {
   try {
-    const profile = await Profile.findOne({ userId });
+    const profile = await Profile.findOneAndUpdate({ userId },
+       {
+        $set: {
+          [section]: data,
+          lastUpdated: new Date(),
+        },
+      },
+      {
+        new: true,
+        upsert: true, // 🔥 THIS IS THE FIX
+      }
+    );
 
     if (!profile) {
       return {
